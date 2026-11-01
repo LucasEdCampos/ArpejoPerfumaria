@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arpejo Perfumaria | Cada fragrância, uma nova melodia</title>
+  <meta name="description" content="Arpejo Perfumaria: fragrâncias exclusivas de alta perfumaria, com alta fixação e essências importadas." />
+
+  <!-- Fontes: Cormorant Garamond (títulos) + Montserrat (textos) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0D0D0D',
+            coal: '#121212',
+            graphite: '#1B1B1D',
+            gold: { DEFAULT: '#D4AF37', light: '#E5C158', dark: '#A8841F' },
+            cream: '#F5F0E6'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['Montserrat', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body { background:#0D0D0D; color:#F5F0E6; font-family:'Montserrat',sans-serif; }
+    /* Texto com gradiente metálico dourado */
+    .gold-text {
+      background: linear-gradient(135deg,#A8841F 0%,#E5C158 35%,#D4AF37 55%,#F7E7A6 75%,#B8922A 100%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .gold-btn {
+      background: linear-gradient(135deg,#B8922A,#E5C158 50%,#D4AF37);
+      color:#0D0D0D; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+      transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+    }
+    .gold-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px -8px rgba(212,175,55,.55); filter:brightness(1.06); }
+    .outline-btn {
+      border:1px solid rgba(212,175,55,.6); color:#E5C158; letter-spacing:.12em; text-transform:uppercase;
+      transition: all .25s ease;
+    }
+    .outline-btn:hover { background:rgba(212,175,55,.12); border-color:#E5C158; }
+    .gold-line { height:1px; background:linear-gradient(90deg,transparent,#D4AF37,transparent); }
+    .card {
+      background:linear-gradient(180deg,#1B1B1D,#121212);
+      border:1px solid rgba(212,175,55,.25);
+      transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    }
+    .card:hover { transform:translateY(-6px); border-color:rgba(229,193,88,.7); box-shadow:0 20px 50px -20px rgba(212,175,55,.35); }
+    .hero-bg {
+      background:
+        radial-gradient(60% 50% at 50% 30%, rgba(212,175,55,.14), transparent 70%),
+        radial-gradient(40% 40% at 85% 85%, rgba(212,175,55,.06), transparent 70%),
+        #0D0D0D;
+    }
+    /* Revelação suave ao rolar */
+    .reveal { opacity:0; transform:translateY(24px); transition: opacity .9s ease, transform .9s ease; }
+    .reveal.show { opacity:1; transform:none; }
+    /* Inputs do admin */
+    .field {
+      width:100%; background:#0D0D0D; border:1px solid rgba(212,175,55,.3); color:#F5F0E6;
+      padding:.7rem .9rem; font-size:.9rem; outline:none; transition:border-color .2s;
+    }
+    .field:focus { border-color:#E5C158; }
+    .field::placeholder { color:rgba(245,240,230,.35); }
+    /* Scrollbar discreta */
+    ::-webkit-scrollbar{width:8px} ::-webkit-scrollbar-track{background:#0D0D0D} ::-webkit-scrollbar-thumb{background:#4a3d14;border-radius:4px}
+    @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .floaty { animation: floaty 6s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { .floaty{animation:none} .reveal{transition:none} }
+  </style>
+</head>
+
+<body class="antialiased">
+
+  <!-- ============ HEADER / NAVEGAÇÃO ============ -->
+  <header id="header" class="fixed top-0 inset-x-0 z-40 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 h-20 flex items-center justify-between">
+      <a href="#inicio" class="flex items-center gap-3" aria-label="Arpejo Perfumaria - início">
+        <svg viewBox="0 0 120 60" class="w-12 h-6" aria-hidden="true">
+          <use href="#arpejo-mark"></use>
+        </svg>
+        <span class="font-serif text-2xl tracking-[.2em] gold-text font-semibold">ARPEJO</span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-9 text-xs uppercase tracking-[.2em] text-cream/80" aria-label="Navegação principal">
+        <a href="#sobre" class="hover:text-gold-light transition">Sobre</a>
+        <a href="#fragrancias" class="hover:text-gold-light transition">Fragrâncias</a>
+        <a href="#diferenciais" class="hover:text-gold-light transition">Diferenciais</a>
+        <a href="#contato" class="hover:text-gold-light transition">Contato</a>
+      </nav>
+
+      <div class="hidden lg:flex items-center gap-3">
+        <button data-admin-open class="outline-btn px-4 py-2.5 text-[11px]" aria-label="Abrir painel administrativo">Admin</button>
+        <a data-whats href="#" target="_blank" rel="noopener" class="gold-btn px-5 py-2.5 text-[11px]">Falar no WhatsApp</a>
+      </div>
+
+      <button id="menuBtn" class="lg:hidden text-gold-light p-2" aria-label="Abrir menu" aria-expanded="false">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+
+    <!-- Menu mobile -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-ink/95 backdrop-blur border-t border-gold/20">
+      <nav class="px-5 py-6 flex flex-col gap-5 text-xs uppercase tracking-[.2em]">
+        <a href="#sobre" class="mobile-link">Sobre</a>
+        <a href="#fragrancias" class="mobile-link">Fragrâncias</a>
+        <a href="#diferenciais" class="mobile-link">Diferenciais</a>
+        <a href="#contato" class="mobile-link">Contato</a>
+        <a data-whats href="#" target="_blank" rel="noopener" class="gold-btn px-5 py-3 text-center text-[11px]">Falar no WhatsApp</a>
+        <button data-admin-open class="outline-btn px-5 py-3 text-[11px]">Painel Admin</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section id="inicio" class="hero-bg min-h-screen flex items-center justify-center text-center px-5 pt-24 pb-16 relative overflow-hidden">
+      <div class="max-w-4xl mx-auto">
+        <svg viewBox="0 0 120 60" class="w-44 sm:w-56 mx-auto mb-6 floaty drop-shadow-[0_0_25px_rgba(212,175,55,.45)]" aria-hidden="true">
+          <use href="#arpejo-mark"></use>
+        </svg>
+        <p class="text-[11px] sm:text-xs uppercase tracking-[.45em] text-gold-light mb-6">Arpejo Perfumaria</p>
+        <h1 class="font-serif text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[1.05] mb-6">
+          A Arte da <span class="gold-text italic">Perfumaria</span> de Luxo
+        </h1>
+        <p class="font-serif italic text-xl sm:text-2xl text-cream/80 mb-3">Cada fragrância, uma nova melodia.</p>
+        <p class="text-sm sm:text-base text-cream/60 max-w-xl mx-auto leading-relaxed mb-10 font-light">
+          Composições exclusivas que despertam memórias, emoções e presença. Descubra essências criadas para quem entende que elegância também se sente no ar.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="#fragrancias" class="gold-btn px-9 py-4 text-xs">Explorar Coleção</a>
+          <a data-whats href="#" target="_blank" rel="noopener" class="outline-btn px-9 py-4 text-xs">Encomendar</a>
+        </div>
+      </div>
+      <a href="#sobre" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-gold/70 animate-bounce" aria-label="Rolar para baixo">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+      </a>
+    </section>
+
+    <!-- ============ SOBRE ============ -->
+    <section id="sobre" class="py-24 lg:py-32 bg-coal">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
+        <div class="reveal">
+          <p class="text-xs uppercase tracking-[.4em] text-gold mb-4">Nossa Essência</p>
+          <h2 class="font-serif text-4xl sm:text-5xl font-semibold mb-6 leading-tight">Uma melodia <span class="gold-text italic">em cada frasco</span></h2>
+          <div class="gold-line w-32 mb-8"></div>
+          <p class="text-cream/70 leading-relaxed mb-5 font-light">
+            Assim como um arpejo reúne notas em sequência para formar harmonia, a Arpejo Perfumaria reúne ingredientes nobres em composições equilibradas, que se revelam aos poucos na pele: do primeiro impacto ao rastro que permanece.
+          </p>
+          <p class="text-cream/70 leading-relaxed font-light">
+            Cada fragrância é selecionada com cuidado artesanal e olhar de curadoria, para entregar sofisticação, personalidade e uma experiência sensorial memorável, do frasco ao último acorde.
+          </p>
+        </div>
+        <div class="reveal grid grid-cols-3 gap-4 text-center">
+          <div class="card p-6"><p class="font-serif text-4xl gold-text font-semibold">3</p><p class="text-[11px] uppercase tracking-[.2em] text-cream/60 mt-2">Camadas de notas</p></div>
+          <div class="card p-6"><p class="font-serif text-4xl gold-text font-semibold">100%</p><p class="text-[11px] uppercase tracking-[.2em] text-cream/60 mt-2">Curadoria autoral</p></div>
+          <div class="card p-6"><p class="font-serif text-4xl gold-text font-semibold">∞</p><p class="text-[11px] uppercase tracking-[.2em] text-cream/60 mt-2">Memórias criadas</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VITRINE / COLEÇÃO ============ -->
+    <section id="fragrancias" class="py-24 lg:py-32">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+        <div class="text-center mb-14 reveal">
+          <p class="text-xs uppercase tracking-[.4em] text-gold mb-4">A Coleção</p>
+          <h2 class="font-serif text-4xl sm:text-5xl font-semibold mb-5">Fragrâncias <span class="gold-text italic">Exclusivas</span></h2>
+          <div class="gold-line w-40 mx-auto"></div>
+        </div>
+        <!-- Cards inseridos dinamicamente via JavaScript -->
+        <div id="vitrine" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-7"></div>
+      </div>
+    </section>
+
+    <!-- ============ DIFERENCIAIS ============ -->
+    <section id="diferenciais" class="py-24 lg:py-32 bg-coal">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+        <div class="text-center mb-14 reveal">
+          <p class="text-xs uppercase tracking-[.4em] text-gold mb-4">Por que Arpejo</p>
+          <h2 class="font-serif text-4xl sm:text-5xl font-semibold">Detalhes que <span class="gold-text italic">fazem a diferença</span></h2>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <article class="card p-8 text-center reveal">
+            <svg class="w-11 h-11 mx-auto mb-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 2"/></svg>
+            <h3 class="font-serif text-2xl mb-3">Alta Fixação</h3>
+            <p class="text-sm text-cream/60 font-light leading-relaxed">Composições concentradas que acompanham você do amanhecer à noite.</p>
+          </article>
+          <article class="card p-8 text-center reveal">
+            <svg class="w-11 h-11 mx-auto mb-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+            <h3 class="font-serif text-2xl mb-3">Essências Importadas</h3>
+            <p class="text-sm text-cream/60 font-light leading-relaxed">Matérias-primas nobres, selecionadas pela pureza e riqueza aromática.</p>
+          </article>
+          <article class="card p-8 text-center reveal">
+            <svg class="w-11 h-11 mx-auto mb-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linejoin="round" d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>
+            <h3 class="font-serif text-2xl mb-3">Exclusividade</h3>
+            <p class="text-sm text-cream/60 font-light leading-relaxed">Uma curadoria pensada para quem prefere assinatura própria ao comum.</p>
+          </article>
+          <article class="card p-8 text-center reveal">
+            <svg class="w-11 h-11 mx-auto mb-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path stroke-linejoin="round" d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+            <h3 class="font-serif text-2xl mb-3">Entrega Segura</h3>
+            <p class="text-sm text-cream/60 font-light leading-relaxed">Embalagem protegida e cuidado em cada etapa até a sua porta.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DEPOIMENTOS ============ -->
+    <section id="depoimentos" class="py-24 lg:py-32">
+      <div class="max-w-6xl mx-auto px-5 lg:px-8">
+        <div class="text-center mb-14 reveal">
+          <p class="text-xs uppercase tracking-[.4em] text-gold mb-4">Quem usa, recomenda</p>
+          <h2 class="font-serif text-4xl sm:text-5xl font-semibold">Palavras de <span class="gold-text italic">nossos clientes</span></h2>
+        </div>
+        <!-- Depoimentos ilustrativos: substitua pelos reais assim que possível -->
+        <div class="grid md:grid-cols-3 gap-6">
+          <figure class="card p-8 reveal">
+            <div class="text-gold text-lg tracking-widest mb-4" aria-label="5 estrelas">★★★★★</div>
+            <blockquote class="font-serif italic text-xl leading-snug text-cream/90 mb-6">“Recebo elogios todas as vezes que uso. A fixação é impressionante e o aroma é de uma elegância rara.”</blockquote>
+            <figcaption class="text-xs uppercase tracking-[.2em] text-gold-light">Mariana S.</figcaption>
+          </figure>
+          <figure class="card p-8 reveal">
+            <div class="text-gold text-lg tracking-widest mb-4" aria-label="5 estrelas">★★★★★</div>
+            <blockquote class="font-serif italic text-xl leading-snug text-cream/90 mb-6">“Presenteei meu marido e ele não larga mais. A embalagem chegou impecável e o atendimento foi atencioso.”</blockquote>
+            <figcaption class="text-xs uppercase tracking-[.2em] text-gold-light">Camila R.</figcaption>
+          </figure>
+          <figure class="card p-8 reveal">
+            <div class="text-gold text-lg tracking-widest mb-4" aria-label="5 estrelas">★★★★★</div>
+            <blockquote class="font-serif italic text-xl leading-snug text-cream/90 mb-6">“Finalmente uma fragrância com personalidade. Dura o dia inteiro e as pessoas sempre perguntam qual é.”</blockquote>
+            <figcaption class="text-xs uppercase tracking-[.2em] text-gold-light">Rafael T.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONTATO / CTA ============ -->
+    <section id="contato" class="py-24 bg-coal text-center px-5">
+      <div class="max-w-2xl mx-auto reveal">
+        <p class="text-xs uppercase tracking-[.4em] text-gold mb-4">Contato</p>
+        <h2 class="font-serif text-4xl sm:text-5xl font-semibold mb-5">Encontre a sua <span class="gold-text italic">melodia</span></h2>
+        <p class="text-cream/65 font-light leading-relaxed mb-9">Conte-nos o que você procura e receba uma indicação personalizada. Atendimento direto pelo WhatsApp.</p>
+        <a data-whats href="#" target="_blank" rel="noopener" class="gold-btn inline-block px-10 py-4 text-xs">Falar no WhatsApp</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-ink border-t border-gold/20 pt-14 pb-8 px-5">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-10 text-center md:text-left">
+      <div>
+        <p class="font-serif text-3xl tracking-[.2em] gold-text font-semibold">ARPEJO</p>
+        <p class="text-[11px] uppercase tracking-[.5em] text-cream/60 mt-1">Perfumaria</p>
+        <p class="font-serif italic text-cream/60 mt-4">Cada fragrância, uma nova melodia.</p>
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-[.3em] text-gold mb-4">Navegação</p>
+        <ul class="space-y-2 text-sm text-cream/70">
+          <li><a class="hover:text-gold-light" href="#sobre">Sobre</a></li>
+          <li><a class="hover:text-gold-light" href="#fragrancias">Fragrâncias</a></li>
+          <li><a class="hover:text-gold-light" href="#diferenciais">Diferenciais</a></li>
+          <li><a class="hover:text-gold-light" href="#contato">Contato</a></li>
+          <li><button data-admin-open class="hover:text-gold-light opacity-70">Painel Admin</button></li>
+        </ul>
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-[.3em] text-gold mb-4">Redes Sociais</p>
+        <div class="flex gap-3 justify-center md:justify-start">
+          <!-- Troque os href pelos perfis oficiais -->
+          <a href="https://instagram.com/" target="_blank" rel="noopener" aria-label="Instagram" class="w-10 h-10 border border-gold/40 text-gold flex items-center justify-center hover:bg-gold/10 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+          </a>
+          <a href="https://facebook.com/" target="_blank" rel="noopener" aria-label="Facebook" class="w-10 h-10 border border-gold/40 text-gold flex items-center justify-center hover:bg-gold/10 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 8h3V4h-3a4 4 0 00-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z"/></svg>
+          </a>
+          <a data-whats href="#" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-10 h-10 border border-gold/40 text-gold flex items-center justify-center hover:bg-gold/10 transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><use href="#wa-icon"></use></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="gold-line max-w-7xl mx-auto mt-10 mb-6"></div>
+    <p class="text-center text-[11px] tracking-[.15em] text-cream/40 uppercase">© <span id="year"></span> Arpejo Perfumaria. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- ============ BOTÃO FLUTUANTE WHATSAPP ============ -->
+  <a data-whats id="whatsFloat" href="#" target="_blank" rel="noopener" aria-label="Fazer encomenda pelo WhatsApp"
+     class="fixed bottom-5 right-5 z-50 w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white shadow-2xl transition hover:scale-110"
+     style="background:linear-gradient(135deg,#1f8f4e,#25D366); box-shadow:0 0 0 2px #D4AF37, 0 12px 30px -6px rgba(37,211,102,.5);">
+    <svg class="w-8 h-8 sm:w-9 sm:h-9" viewBox="0 0 24 24" fill="currentColor"><use href="#wa-icon"></use></svg>
+  </a>
+
+  <!-- ============ MODAL: PAINEL ADMINISTRATIVO ============ -->
+  <div id="adminModal" class="hidden fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="min-h-full flex items-start sm:items-center justify-center p-4">
+      <div class="relative w-full max-w-3xl bg-graphite border border-gold/40 p-6 sm:p-9 my-6">
+        <button id="adminClose" class="absolute top-4 right-4 text-gold-light hover:text-white" aria-label="Fechar painel">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+
+        <!-- Tela de login -->
+        <div id="adminLogin">
+          <h2 id="adminTitle" class="font-serif text-3xl gold-text font-semibold mb-2">Painel Administrativo</h2>
+          <p class="text-sm text-cream/60 mb-6">Acesso restrito. Informe usuário e senha para continuar.</p>
+          <form id="loginForm" class="space-y-4 max-w-sm">
+            <input id="adminUser" type="text" class="field" placeholder="Usuário" autocomplete="username" autocapitalize="off" spellcheck="false" required />
+            <input id="adminPass" type="password" class="field" placeholder="Senha" autocomplete="current-password" required />
+            <p id="loginError" class="hidden text-sm text-red-400">Usuário ou senha incorretos.</p>
+            <button type="submit" class="gold-btn px-8 py-3 text-xs">Entrar</button>
+          </form>
+        </div>
+
+        <!-- Área logada -->
+        <div id="adminArea" class="hidden">
+          <div class="flex items-center justify-between mb-6 pr-8">
+            <h2 class="font-serif text-3xl gold-text font-semibold">Cadastrar Perfume</h2>
+            <button id="logoutBtn" class="text-[11px] uppercase tracking-[.2em] text-cream/50 hover:text-gold-light">Sair</button>
+          </div>
+
+          <form id="perfumeForm" class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fNome">Nome do Perfume *</label>
+              <input id="fNome" class="field" required maxlength="60" placeholder="Ex.: Noir Absolu" />
+            </div>
+            <div>
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFamilia">Família Olfativa *</label>
+              <input id="fFamilia" class="field" required maxlength="40" placeholder="Ex.: Amadeirado Oriental" />
+            </div>
+            <div>
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fPreco">Preço (R$) *</label>
+              <input id="fPreco" type="number" step="0.01" min="0" class="field" required placeholder="Ex.: 289.90" />
+            </div>
+            <div>
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fLink">Link da foto (opcional)</label>
+              <input id="fLink" type="url" class="field" placeholder="https://..." />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFile">Ou envie uma foto do produto</label>
+              <input id="fFile" type="file" accept="image/*" class="field file:mr-4 file:border-0 file:bg-gold file:text-ink file:px-4 file:py-1.5 file:text-xs file:uppercase file:tracking-wider" />
+              <p class="text-[11px] text-cream/40 mt-1">A imagem é reduzida automaticamente e salva no seu navegador.</p>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fDesc">Descrição *</label>
+              <textarea id="fDesc" rows="3" class="field" required maxlength="300" placeholder="Uma breve descrição sensorial..."></textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fTopo">Notas de Topo *</label>
+              <input id="fTopo" class="field" required maxlength="80" placeholder="Bergamota, Limão Siciliano" />
+            </div>
+            <div>
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fCoracao">Notas de Coração *</label>
+              <input id="fCoracao" class="field" required maxlength="80" placeholder="Jasmim, Rosa" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFundo">Notas de Fundo *</label>
+              <input id="fFundo" class="field" required maxlength="80" placeholder="Âmbar, Sândalo, Baunilha" />
+            </div>
+            <div class="sm:col-span-2 flex flex-wrap gap-3 pt-2">
+              <button type="submit" class="gold-btn px-8 py-3 text-xs">Adicionar à Vitrine</button>
+              <button type="reset" class="outline-btn px-6 py-3 text-xs">Limpar</button>
+            </div>
+          </form>
+
+          <div class="gold-line my-8"></div>
+
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-serif text-2xl">Perfumes cadastrados <span id="countBadge" class="text-gold text-lg"></span></h3>
+            <button id="restoreBtn" class="text-[11px] uppercase tracking-[.2em] text-cream/50 hover:text-gold-light">Restaurar padrão</button>
+          </div>
+          <ul id="adminList" class="space-y-3"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de feedback -->
+  <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[70] hidden bg-graphite border border-gold text-cream text-sm px-5 py-3 shadow-xl"></div>
+
+  <!-- ============ SÍMBOLOS SVG REUTILIZÁVEIS ============ -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#A8841F"/><stop offset=".4" stop-color="#F7E7A6"/>
+        <stop offset=".7" stop-color="#D4AF37"/><stop offset="1" stop-color="#B8922A"/>
+      </linearGradient>
+      <!-- Marca "arpejo": fitas douradas em arco, inspiradas no logotipo -->
+      <symbol id="arpejo-mark" viewBox="0 0 120 60">
+        <path d="M18 52 C 38 20, 72 6, 98 8 C 80 12, 56 28, 40 52 Z" fill="url(#goldGrad)"/>
+        <path d="M40 52 C 52 30, 76 14, 98 8 C 108 16, 110 36, 112 52 C 106 40, 100 30, 92 24 C 80 34, 66 44, 58 52 Z" fill="url(#goldGrad)" opacity=".9"/>
+        <path d="M6 54 C 40 34, 84 38, 114 50 C 84 52, 50 56, 6 54 Z" fill="url(#goldGrad)"/>
+        <path d="M30 34 C 52 20, 80 22, 96 34 C 78 30, 52 32, 30 34 Z" fill="url(#goldGrad)" opacity=".85"/>
+      </symbol>
+      <symbol id="wa-icon" viewBox="0 0 24 24">
+        <path d="M20.5 3.5A11.8 11.8 0 0012.04 0C5.5 0 .2 5.3.2 11.84c0 2.09.55 4.13 1.59 5.93L0 24l6.4-1.68a11.8 11.8 0 005.64 1.44h.01c6.53 0 11.84-5.3 11.84-11.84 0-3.16-1.23-6.13-3.39-8.42zM12.05 21.8h-.01a9.9 9.9 0 01-5.04-1.38l-.36-.21-3.8 1 1.02-3.7-.24-.38a9.9 9.9 0 01-1.52-5.28c0-5.46 4.45-9.9 9.92-9.9 2.64 0 5.13 1.03 7 2.9a9.84 9.84 0 012.9 7c0 5.46-4.45 9.96-9.87 9.96zm5.43-7.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ============ JAVASCRIPT ============ -->
+  <script>
+  (() => {
+    'use strict';
+
+    /* ---------- CONFIGURAÇÕES (edite aqui) ---------- */
+    const CONFIG = {
+      // Número do WhatsApp do proprietário: código do país + DDD + número, só dígitos
+      whatsNumber: '5519999999999',
+      // Acesso do administrador (protege apenas a interface; fica visível no código-fonte)
+      adminUser: 'MarceloArpejo',
+      adminPassword: 'MarcelaoAdmin123@',
+      storageKey: 'arpejo_perfumes_v1',
+      defaultMessage: 'Olá! Gostaria de fazer uma encomenda na Arpejo Perfumaria.'
+    };
+
+    const $  = (s, c = document) => c.querySelector(s);
+    const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+
+    /* ---------- Utilidades ---------- */
+    // Escapa texto para evitar injeção de HTML
+    const esc = (str = '') => String(str).replace(/[&<>"']/g, ch =>
+      ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
+
+    const brl = n => Number(n).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+    const whatsLink = msg => `https://wa.me/${CONFIG.whatsNumber}?text=${encodeURIComponent(msg)}`;
+
+    // Aceita apenas URLs http(s) ou data:image para imagens
+    const safeImg = url => /^(https?:\/\/|data:image\/)/i.test(url || '') ? url : '';
+
+    function toast(msg) {
+      const t = $('#toast');
+      t.textContent = msg; t.classList.remove('hidden');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => t.classList.add('hidden'), 2600);
+    }
+
+    /* ---------- Frasco ilustrativo (SVG) usado quando não há foto ---------- */
+    function bottleSvg(accent = '#D4AF37') {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 380">
+        <defs>
+          <radialGradient id="bg" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#2a2417"/><stop offset="1" stop-color="#0d0d0d"/></radialGradient>
+          <linearGradient id="gl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${accent}" stop-opacity=".95"/><stop offset=".45" stop-color="#fff6d6" stop-opacity=".9"/><stop offset="1" stop-color="${accent}" stop-opacity=".6"/></linearGradient>
+          <linearGradient id="cap" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f6d17"/><stop offset=".5" stop-color="#f1d77a"/><stop offset="1" stop-color="#b8922a"/></linearGradient>
+        </defs>
+        <rect width="300" height="380" fill="url(#bg)"/>
+        <ellipse cx="150" cy="335" rx="80" ry="10" fill="#000" opacity=".5"/>
+        <rect x="128" y="40" width="44" height="46" rx="4" fill="url(#cap)"/>
+        <rect x="138" y="84" width="24" height="18" fill="#6e5513"/>
+        <rect x="70" y="100" width="160" height="230" rx="18" fill="url(#gl)" opacity=".92"/>
+        <rect x="70" y="100" width="160" height="230" rx="18" fill="none" stroke="#f7e7a6" stroke-opacity=".6"/>
+        <rect x="92" y="150" width="116" height="110" rx="4" fill="#0d0d0d" fill-opacity=".72" stroke="#D4AF37" stroke-opacity=".7"/>
+        <text x="150" y="196" text-anchor="middle" font-family="Georgia,serif" font-size="20" letter-spacing="5" fill="#E5C158">ARPEJO</text>
+        <text x="150" y="220" text-anchor="middle" font-family="Georgia,serif" font-size="9" letter-spacing="4" fill="#F5F0E6" opacity=".8">PERFUMARIA</text>
+        <path d="M84 118 Q 90 220 84 316" stroke="#fff" stroke-opacity=".35" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </svg>`;
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    }
+
+    /* ---------- Dados ---------- */
+    const DEFAULTS = [
+      { id:'d1', nome:'Noir Absolu', familia:'Amadeirado Oriental', preco:329.90,
+        desc:'Intenso e envolvente, uma assinatura noturna de presença marcante.',
+        topo:'Bergamota, Pimenta Rosa', coracao:'Oud, Rosa Negra', fundo:'Âmbar, Patchouli, Baunilha', img:bottleSvg('#C9A227') },
+      { id:'d2', nome:'Lumière Dorée', familia:'Floral Luminoso', preco:289.90,
+        desc:'Delicadeza radiante que desabrocha em flores brancas sobre fundo cremoso.',
+        topo:'Pera, Flor de Laranjeira', coracao:'Jasmim, Peônia', fundo:'Almíscar, Sândalo', img:bottleSvg('#E5C158') },
+      { id:'d3', nome:'Crescendo', familia:'Cítrico Aromático', preco:259.90,
+        desc:'Frescor elegante que cresce na pele, ideal para os dias de sol e movimento.',
+        topo:'Limão Siciliano, Gengibre', coracao:'Lavanda, Sálvia', fundo:'Vetiver, Cedro', img:bottleSvg('#B8A04A') }
+    ];
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(CONFIG.storageKey);
+        if (raw === null) return DEFAULTS.slice();      // nunca cadastrou: mostra padrão
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : DEFAULTS.slice();
+      } catch { return DEFAULTS.slice(); }
+    }
+    function save(list) {
+      try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(list)); return true; }
+      catch { toast('Não foi possível salvar: armazenamento cheio. Use fotos menores ou link.'); return false; }
+    }
+
+    let perfumes = load();
+
+    /* ---------- Renderização da vitrine ---------- */
+    function renderVitrine() {
+      const grid = $('#vitrine');
+      if (!perfumes.length) {
+        grid.innerHTML = `<p class="col-span-full text-center text-cream/50 font-light">Novas fragrâncias em breve.</p>`;
+        return;
+      }
+      grid.innerHTML = perfumes.map(p => {
+        const img = safeImg(p.img) || bottleSvg();
+        const msg = `Olá! Gostaria de encomendar o perfume "${p.nome}" da Arpejo Perfumaria.`;
+        return `
+        <article class="card flex flex-col reveal show">
+          <div class="aspect-[4/5] overflow-hidden bg-ink relative">
+            <img src="${esc(img)}" alt="Frasco do perfume ${esc(p.nome)}" loading="lazy"
+                 class="w-full h-full object-cover transition duration-700 hover:scale-105"
+                 onerror="this.onerror=null;this.src='${bottleSvg()}'" />
+            <span class="absolute top-3 left-3 bg-ink/80 border border-gold/50 text-gold-light text-[10px] uppercase tracking-[.2em] px-3 py-1">${esc(p.familia)}</span>
+          </div>
+          <div class="p-6 flex flex-col flex-1">
+            <h3 class="font-serif text-3xl gold-text font-semibold mb-2">${esc(p.nome)}</h3>
+            <p class="text-sm text-cream/65 font-light leading-relaxed mb-5">${esc(p.desc)}</p>
+            <dl class="text-xs space-y-1.5 mb-6 border-t border-gold/20 pt-4">
+              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-16 shrink-0">Topo</dt><dd class="text-cream/75">${esc(p.topo)}</dd></div>
+              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-16 shrink-0">Coração</dt><dd class="text-cream/75">${esc(p.coracao)}</dd></div>
+              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-16 shrink-0">Fundo</dt><dd class="text-cream/75">${esc(p.fundo)}</dd></div>
+            </dl>
+            <div class="mt-auto">
+              <p class="font-serif text-3xl text-cream mb-4">${brl(p.preco)}</p>
+              <a href="${whatsLink(msg)}" target="_blank" rel="noopener" class="gold-btn block text-center px-5 py-3.5 text-[11px]">Encomendar via WhatsApp</a>
+            </div>
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    /* ---------- Painel Admin: lista ---------- */
+    function renderAdminList() {
+      $('#countBadge').textContent = `(${perfumes.length})`;
+      const ul = $('#adminList');
+      if (!perfumes.length) {
+        ul.innerHTML = `<li class="text-sm text-cream/50">Nenhum perfume cadastrado.</li>`;
+        return;
+      }
+      ul.innerHTML = perfumes.map(p => `
+        <li class="flex items-center gap-4 border border-gold/20 bg-ink/60 p-3">
+          <img src="${esc(safeImg(p.img) || bottleSvg())}" alt="" class="w-14 h-14 object-cover border border-gold/30" />
+          <div class="flex-1 min-w-0">
+            <p class="font-serif text-xl truncate">${esc(p.nome)}</p>
+            <p class="text-xs text-cream/50 truncate">${esc(p.familia)} · ${brl(p.preco)}</p>
+          </div>
+          <button data-del="${esc(p.id)}" class="text-[11px] uppercase tracking-[.15em] text-red-400 hover:text-red-300 border border-red-400/40 px-3 py-2">Excluir</button>
+        </li>`).join('');
+    }
+
+    function refreshAll() { renderVitrine(); renderAdminList(); }
+
+    /* ---------- Redimensiona imagem enviada (economiza localStorage) ---------- */
+    function fileToDataUrl(file, maxW = 720) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            const scale = Math.min(1, maxW / img.width);
+            const c = document.createElement('canvas');
+            c.width = Math.round(img.width * scale);
+            c.height = Math.round(img.height * scale);
+            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+            resolve(c.toDataURL('image/jpeg', 0.82));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /* ---------- Eventos do Admin ---------- */
+    const modal = $('#adminModal');
+    const SESSION_KEY = 'arpejo_admin_ok';
+
+    function showAdminState() {
+      const logged = sessionStorage.getItem(SESSION_KEY) === '1';
+      $('#adminLogin').classList.toggle('hidden', logged);
+      $('#adminArea').classList.toggle('hidden', !logged);
+      if (logged) renderAdminList();
+    }
+    function openAdmin() {
+      modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
+      showAdminState();
+      if (sessionStorage.getItem(SESSION_KEY) !== '1') setTimeout(() => $('#adminUser').focus(), 50);
+    }
+    function closeAdmin() { modal.classList.add('hidden'); document.body.style.overflow = ''; }
+
+    $$('[data-admin-open]').forEach(b => b.addEventListener('click', () => { $('#mobileMenu').classList.add('hidden'); openAdmin(); }));
+    $('#adminClose').addEventListener('click', closeAdmin);
+    modal.addEventListener('click', e => { if (e.target === modal) closeAdmin(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeAdmin(); });
+
+    $('#loginForm').addEventListener('submit', e => {
+      e.preventDefault();
+      if ($('#adminUser').value.trim() === CONFIG.adminUser && $('#adminPass').value === CONFIG.adminPassword) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        $('#adminUser').value = ''; $('#adminPass').value = ''; $('#loginError').classList.add('hidden');
+        showAdminState();
+      } else { $('#loginError').classList.remove('hidden'); }
+    });
+    $('#logoutBtn').addEventListener('click', () => { sessionStorage.removeItem(SESSION_KEY); showAdminState(); });
+
+    $('#perfumeForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const file = $('#fFile').files[0];
+      let img = '';
+      try {
+        if (file) img = await fileToDataUrl(file);
+        else img = safeImg($('#fLink').value.trim());
+      } catch { toast('Não foi possível ler a imagem.'); return; }
+
+      const item = {
+        id: 'p' + Date.now(),
+        nome: $('#fNome').value.trim(),
+        familia: $('#fFamilia').value.trim(),
+        preco: parseFloat($('#fPreco').value) || 0,
+        desc: $('#fDesc').value.trim(),
+        topo: $('#fTopo').value.trim(),
+        coracao: $('#fCoracao').value.trim(),
+        fundo: $('#fFundo').value.trim(),
+        img: img || bottleSvg()
+      };
+      const next = [item, ...perfumes];
+      if (save(next)) {
+        perfumes = next; refreshAll(); e.target.reset();
+        toast('Perfume adicionado à vitrine.');
+      }
+    });
+
+    $('#adminList').addEventListener('click', e => {
+      const btn = e.target.closest('[data-del]');
+      if (!btn) return;
+      if (!confirm('Excluir este perfume da vitrine?')) return;
+      const next = perfumes.filter(p => p.id !== btn.dataset.del);
+      if (save(next)) { perfumes = next; refreshAll(); toast('Perfume excluído.'); }
+    });
+
+    $('#restoreBtn').addEventListener('click', () => {
+      if (!confirm('Restaurar os perfumes padrão? Os cadastrados serão removidos.')) return;
+      localStorage.removeItem(CONFIG.storageKey);
+      perfumes = DEFAULTS.slice(); refreshAll(); toast('Vitrine restaurada.');
+    });
+
+    /* ---------- Links de WhatsApp (todos os [data-whats]) ---------- */
+    $$('[data-whats]').forEach(a => a.href = whatsLink(CONFIG.defaultMessage));
+
+    /* ---------- Menu mobile ---------- */
+    const menuBtn = $('#menuBtn'), mobileMenu = $('#mobileMenu');
+    menuBtn.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('hidden') === false;
+      menuBtn.setAttribute('aria-expanded', open);
+    });
+    $$('.mobile-link').forEach(l => {
+      l.classList.add('text-cream/85','hover:text-gold-light');
+      l.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    /* ---------- Header translúcido ao rolar ---------- */
+    const header = $('#header');
+    const onScroll = () => {
+      const scrolled = window.scrollY > 40;
+      header.classList.toggle('bg-ink/90', scrolled);
+      header.classList.toggle('backdrop-blur', scrolled);
+      header.classList.toggle('border-b', scrolled);
+      header.classList.toggle('border-gold/20', scrolled);
+    };
+    window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+    /* ---------- Animação de entrada (IntersectionObserver) ---------- */
+    const io = 'IntersectionObserver' in window
+      ? new IntersectionObserver(entries => entries.forEach(en => {
+          if (en.isIntersecting) { en.target.classList.add('show'); io.unobserve(en.target); }
+        }), { threshold: .12 })
+      : null;
+    $$('.reveal:not(.show)').forEach(el => io ? io.observe(el) : el.classList.add('show'));
+
+    /* ---------- Inicialização ---------- */
+    $('#year').textContent = new Date().getFullYear();
+    renderVitrine();
+  })();
+  </script>
+</body>
+</html>
