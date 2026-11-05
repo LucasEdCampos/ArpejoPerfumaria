@@ -104,7 +104,6 @@
       </nav>
 
       <div class="hidden lg:flex items-center gap-3">
-        <button data-admin-open class="outline-btn px-4 py-2.5 text-[11px]" aria-label="Abrir painel administrativo">Admin</button>
         <a data-whats href="#" target="_blank" rel="noopener" class="gold-btn px-5 py-2.5 text-[11px]">Falar no WhatsApp</a>
       </div>
 
@@ -121,7 +120,6 @@
         <a href="#diferenciais" class="mobile-link">Diferenciais</a>
         <a href="#contato" class="mobile-link">Contato</a>
         <a data-whats href="#" target="_blank" rel="noopener" class="gold-btn px-5 py-3 text-center text-[11px]">Falar no WhatsApp</a>
-        <button data-admin-open class="outline-btn px-5 py-3 text-[11px]">Painel Admin</button>
       </nav>
     </div>
   </header>
@@ -272,7 +270,6 @@
           <li><a class="hover:text-gold-light" href="#fragrancias">Fragrâncias</a></li>
           <li><a class="hover:text-gold-light" href="#diferenciais">Diferenciais</a></li>
           <li><a class="hover:text-gold-light" href="#contato">Contato</a></li>
-          <li><button data-admin-open class="hover:text-gold-light opacity-70">Painel Admin</button></li>
         </ul>
       </div>
       <div>
@@ -292,7 +289,13 @@
       </div>
     </div>
     <div class="gold-line max-w-7xl mx-auto mt-10 mb-6"></div>
-    <p class="text-center text-[11px] tracking-[.15em] text-cream/40 uppercase">© <span id="year"></span> Arpejo Perfumaria. Todos os direitos reservados.</p>
+    <div class="flex items-center justify-center gap-3">
+      <p class="text-center text-[11px] tracking-[.15em] text-cream/40 uppercase">© <span id="year"></span> Arpejo Perfumaria. Todos os direitos reservados.</p>
+      <!-- Acesso discreto à área restrita (também abre com #admin no final do endereço) -->
+      <button data-admin-open type="button" class="text-cream/20 hover:text-gold-light focus-visible:text-gold-light transition" aria-label="Área restrita" title="Área restrita">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path stroke-linecap="round" d="M8 11V8a4 4 0 018 0v3"/></svg>
+      </button>
+    </div>
   </footer>
 
   <!-- ============ BOTÃO FLUTUANTE WHATSAPP ============ -->
@@ -325,7 +328,7 @@
         <!-- Área logada -->
         <div id="adminArea" class="hidden">
           <div class="flex items-center justify-between mb-6 pr-8">
-            <h2 class="font-serif text-3xl gold-text font-semibold">Cadastrar Perfume</h2>
+            <h2 id="formTitle" class="font-serif text-3xl gold-text font-semibold">Cadastrar Perfume</h2>
             <button id="logoutBtn" class="text-[11px] uppercase tracking-[.2em] text-cream/50 hover:text-gold-light">Sair</button>
           </div>
 
@@ -350,6 +353,7 @@
               <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFile">Ou envie uma foto do produto</label>
               <input id="fFile" type="file" accept="image/*" class="field file:mr-4 file:border-0 file:bg-gold file:text-ink file:px-4 file:py-1.5 file:text-xs file:uppercase file:tracking-wider" />
               <p class="text-[11px] text-cream/40 mt-1">JPG, PNG ou WebP. A imagem é reduzida automaticamente e enviada ao servidor.</p>
+              <p id="editHint" class="hidden text-[11px] text-gold-light mt-1">Editando: a foto atual será mantida, a menos que você envie outra ou informe um novo link.</p>
             </div>
             <div class="sm:col-span-2">
               <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fDesc">Descrição *</label>
@@ -368,8 +372,9 @@
               <input id="fFundo" class="field" required maxlength="80" placeholder="Âmbar, Sândalo, Baunilha" />
             </div>
             <div class="sm:col-span-2 flex flex-wrap gap-3 pt-2">
-              <button type="submit" class="gold-btn px-8 py-3 text-xs">Adicionar à Vitrine</button>
+              <button id="submitBtn" type="submit" class="gold-btn px-8 py-3 text-xs">Adicionar à Vitrine</button>
               <button type="reset" class="outline-btn px-6 py-3 text-xs">Limpar</button>
+              <button id="cancelEdit" type="button" class="hidden outline-btn px-6 py-3 text-xs">Cancelar edição</button>
             </div>
           </form>
 
@@ -529,9 +534,9 @@
             <h3 class="font-serif text-3xl gold-text font-semibold mb-2">${esc(p.nome)}</h3>
             <p class="text-sm text-cream/65 font-light leading-relaxed mb-5">${esc(p.desc)}</p>
             <dl class="text-xs space-y-1.5 mb-6 border-t border-gold/20 pt-4">
-              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-16 shrink-0">Topo</dt><dd class="text-cream/75">${esc(p.topo)}</dd></div>
-              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-16 shrink-0">Coração</dt><dd class="text-cream/75">${esc(p.coracao)}</dd></div>
-              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-16 shrink-0">Fundo</dt><dd class="text-cream/75">${esc(p.fundo)}</dd></div>
+              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-24 shrink-0">Topo</dt><dd class="text-cream/75">${esc(p.topo)}</dd></div>
+              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-24 shrink-0">Coração</dt><dd class="text-cream/75">${esc(p.coracao)}</dd></div>
+              <div class="flex gap-2"><dt class="text-gold uppercase tracking-[.15em] w-24 shrink-0">Fundo</dt><dd class="text-cream/75">${esc(p.fundo)}</dd></div>
             </dl>
             <div class="mt-auto">
               <p class="font-serif text-3xl text-cream mb-4">${brl(p.preco)}</p>
@@ -557,7 +562,10 @@
             <p class="font-serif text-xl truncate">${esc(p.nome)}</p>
             <p class="text-xs text-cream/50 truncate">${esc(p.familia)} · ${brl(p.preco)}</p>
           </div>
-          <button data-del="${esc(p.id)}" class="text-[11px] uppercase tracking-[.15em] text-red-400 hover:text-red-300 border border-red-400/40 px-3 py-2">Excluir</button>
+          <div class="flex flex-col sm:flex-row gap-2 shrink-0">
+            <button data-edit="${esc(p.id)}" class="text-[11px] uppercase tracking-[.15em] text-gold-light hover:text-white border border-gold/50 px-3 py-2">Editar</button>
+            <button data-del="${esc(p.id)}" class="text-[11px] uppercase tracking-[.15em] text-red-400 hover:text-red-300 border border-red-400/40 px-3 py-2">Excluir</button>
+          </div>
         </li>`).join('');
     }
 
@@ -602,7 +610,11 @@
       showAdminState();
       if (!isAdmin) setTimeout(() => $('#adminEmail').focus(), 50);
     }
-    function closeAdmin() { modal.classList.add('hidden'); document.body.style.overflow = ''; }
+    function closeAdmin() {
+      modal.classList.add('hidden'); document.body.style.overflow = '';
+      // tira o "#admin" do endereço, para poder abrir de novo
+      if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search);
+    }
 
     // Sessão expirada: volta para a tela de login
     function sessionExpired() { isAdmin = false; showAdminState(); toast('Sessão expirada. Entre novamente.'); }
@@ -634,15 +646,57 @@
       isAdmin = false; showAdminState();
     });
 
+    // Caminho do arquivo dentro do bucket, se a foto foi enviada por este painel
+    const photoMarker = `/storage/v1/object/public/${CONFIG.bucket}/`;
+    const storagePath = url => (url && url.includes(photoMarker)) ? decodeURIComponent(url.split(photoMarker)[1]) : null;
+
+    /* ---------- Edição de perfume ---------- */
+    let editingId = null;   // id do perfume em edição (null = cadastrando um novo)
+
+    function setEditMode(id) {
+      editingId = id;
+      $('#formTitle').textContent = id ? 'Editar Perfume' : 'Cadastrar Perfume';
+      $('#submitBtn').textContent = id ? 'Salvar Alterações' : 'Adicionar à Vitrine';
+      $('#cancelEdit').classList.toggle('hidden', !id);
+      $('#editHint').classList.toggle('hidden', !id);
+    }
+    // "Limpar" e form.reset() também saem do modo de edição
+    $('#perfumeForm').addEventListener('reset', () => setEditMode(null));
+    $('#cancelEdit').addEventListener('click', () => $('#perfumeForm').reset());
+
+    function startEdit(id) {
+      const p = perfumes.find(x => x.id === id);
+      if (!p) return;
+      const form = $('#perfumeForm');
+      form.reset();                       // limpa os campos e o arquivo selecionado
+      setEditMode(id);
+      $('#fNome').value = p.nome;
+      $('#fFamilia').value = p.familia;
+      $('#fPreco').value = p.preco;
+      $('#fDesc').value = p.desc;
+      $('#fTopo').value = p.topo;
+      $('#fCoracao').value = p.coracao;
+      $('#fFundo').value = p.fundo;
+      // Só preenche o link se for uma foto externa; fotos enviadas por aqui ficam guardadas
+      $('#fLink').value = (/^https?:/i.test(p.img) && !storagePath(p.img)) ? p.img : '';
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('#fNome').focus();
+    }
+
     $('#perfumeForm').addEventListener('submit', async e => {
       e.preventDefault();
       if (!sb) { toast('Serviço indisponível no momento.'); return; }
       const form = e.target;
-      const btn = form.querySelector('button[type="submit"]');
+      const btn = $('#submitBtn');
+      const id = editingId;                                 // guarda antes do form.reset()
+      const old = id ? perfumes.find(p => p.id === id) : null;
+      let uploadedPath = null;
+      const dropUpload = () => uploadedPath ? sb.storage.from(CONFIG.bucket).remove([uploadedPath]) : null;
       btn.disabled = true;
       try {
-        let imagem_url = safeImg($('#fLink').value.trim());
+        const link = safeImg($('#fLink').value.trim());
         const file = $('#fFile').files[0];
+        let imagem_url = null;                              // null = não mexer na foto
         if (file) {
           if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error('Use uma foto JPG, PNG ou WebP.');
           if (file.size > 10 * 1024 * 1024) throw new Error('A foto deve ter no máximo 10 MB.');
@@ -653,26 +707,48 @@
             if (isAuthError(up.error)) { sessionExpired(); return; }
             throw new Error('Falha ao enviar a foto: ' + up.error.message);
           }
+          uploadedPath = path;
           imagem_url = sb.storage.from(CONFIG.bucket).getPublicUrl(path).data.publicUrl;
+        } else if (link && (!old || link !== old.img)) {
+          imagem_url = link;
         }
-        const { error } = await sb.from('perfumes').insert({
+
+        const fields = {
           nome: $('#fNome').value.trim(),
           familia: $('#fFamilia').value.trim(),
           preco: parseFloat($('#fPreco').value) || 0,
           descricao: $('#fDesc').value.trim(),
           nota_topo: $('#fTopo').value.trim(),
           nota_coracao: $('#fCoracao').value.trim(),
-          nota_fundo: $('#fFundo').value.trim(),
-          imagem_url: imagem_url || null
-        });
-        if (error) {
-          if (isAuthError(error)) { sessionExpired(); return; }
-          throw new Error('Não foi possível salvar: ' + error.message);
+          nota_fundo: $('#fFundo').value.trim()
+        };
+
+        if (id) {
+          if (imagem_url) fields.imagem_url = imagem_url;
+          // .select() devolve as linhas alteradas: lista vazia = o banco recusou (sem login)
+          const { data, error } = await sb.from('perfumes').update(fields).eq('id', id).select();
+          if (error) {
+            await dropUpload();
+            if (isAuthError(error)) { sessionExpired(); return; }
+            throw new Error('Não foi possível salvar: ' + error.message);
+          }
+          if (!data || !data.length) { await dropUpload(); sessionExpired(); return; }
+          // Foto trocada: apaga a antiga do Storage (se tiver sido enviada por este painel)
+          const oldPath = imagem_url && old ? storagePath(old.img) : null;
+          if (oldPath) await sb.storage.from(CONFIG.bucket).remove([oldPath]);
+        } else {
+          const { error } = await sb.from('perfumes').insert({ ...fields, imagem_url });
+          if (error) {
+            await dropUpload();
+            if (isAuthError(error)) { sessionExpired(); return; }
+            throw new Error('Não foi possível salvar: ' + error.message);
+          }
         }
         form.reset();
         await loadPerfumes();
-        toast('Perfume adicionado à vitrine.');
+        toast(id ? 'Alterações salvas.' : 'Perfume adicionado à vitrine.');
       } catch (err) {
+        await dropUpload();
         toast(err.message || 'Não foi possível salvar.');
       } finally {
         btn.disabled = false;
@@ -680,6 +756,9 @@
     });
 
     $('#adminList').addEventListener('click', async e => {
+      const editBtn = e.target.closest('[data-edit]');
+      if (editBtn) { startEdit(editBtn.dataset.edit); return; }
+
       const btn = e.target.closest('[data-del]');
       if (!btn || !sb) return;
       if (!confirm('Excluir este perfume da vitrine?')) return;
@@ -688,14 +767,18 @@
       const { data, error } = await sb.from('perfumes').delete().eq('id', btn.dataset.del).select();
       if (error) { toast('Não foi possível excluir: ' + error.message); return; }
       if (!data || !data.length) { sessionExpired(); return; }
+      if (btn.dataset.del === editingId) $('#perfumeForm').reset();   // estava editando este mesmo perfume
       // Apaga também a foto do Storage, se ela foi enviada por este painel
-      const marker = `/storage/v1/object/public/${CONFIG.bucket}/`;
-      if (item && item.img && item.img.includes(marker)) {
-        await sb.storage.from(CONFIG.bucket).remove([decodeURIComponent(item.img.split(marker)[1])]);
-      }
+      const path = item ? storagePath(item.img) : null;
+      if (path) await sb.storage.from(CONFIG.bucket).remove([path]);
       await loadPerfumes();
       toast('Perfume excluído.');
     });
+
+    // Acesso discreto: abrir o site com #admin no final do endereço também abre o painel
+    const openFromHash = () => { if (location.hash === '#admin') openAdmin(); };
+    window.addEventListener('hashchange', openFromHash);
+    openFromHash();
 
     /* ---------- Links de WhatsApp (todos os [data-whats]) ---------- */
     $$('[data-whats]').forEach(a => a.href = whatsLink(CONFIG.defaultMessage));
