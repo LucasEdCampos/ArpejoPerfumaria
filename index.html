@@ -81,6 +81,18 @@
     @keyframes floaty { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     .floaty { animation: floaty 6s ease-in-out infinite; }
     @media (prefers-reduced-motion: reduce) { .floaty{animation:none} .reveal{transition:none} }
+    /* Painel administrativo */
+    option { background:#0D0D0D; color:#F5F0E6; }
+    .tab-btn { display:flex; align-items:center; gap:.7rem; padding:.75rem .9rem; font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:rgba(245,240,230,.65); border:1px solid transparent; white-space:nowrap; transition:all .2s; }
+    .tab-btn:hover { color:#E5C158; }
+    @media (max-width: 1023px) { .tab-btn { padding:.7rem .75rem; letter-spacing:.12em; gap:0; } .tab-btn svg { display:none; } }
+    .tab-btn[aria-selected="true"] { color:#E5C158; background:rgba(212,175,55,.1); border-color:rgba(212,175,55,.35); }
+    .seg-btn { padding:.55rem 1rem; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; color:rgba(245,240,230,.6); transition:all .2s; }
+    .seg-btn:hover { color:#E5C158; }
+    .seg-btn[aria-pressed="true"] { background:rgba(212,175,55,.15); color:#E5C158; }
+    #chartSvg .bar { fill:#B38D25; transition:fill .15s; }
+    #chartSvg .bar.on { fill:#D4AF37; }
+    .rank-bar { background:#B38D25; border-radius:0 4px 4px 0; }
   </style>
 </head>
 
@@ -275,7 +287,7 @@
       <div>
         <p class="text-xs uppercase tracking-[.3em] text-gold mb-4">Redes Sociais</p>
         <div class="flex gap-3 justify-center md:justify-start">
-          <a href="https://www.instagram.com/arpejoperfumaria?cplk=cDhjZ2N5OWZqMzln" target="_blank" rel="noopener" aria-label="Instagram" class="w-10 h-10 border border-gold/40 text-gold flex items-center justify-center hover:bg-gold/10 transition">
+          <a href="https://www.instagram.com/arpejoperfumaria?cplk=cDhjZ2N5OWZqMzln" target="_blank" rel="noopener" aria-label="Instagram" data-track="clique_instagram" class="w-10 h-10 border border-gold/40 text-gold flex items-center justify-center hover:bg-gold/10 transition">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
           </a>
           <a data-whats href="#" target="_blank" rel="noopener" aria-label="WhatsApp" class="w-10 h-10 border border-gold/40 text-gold flex items-center justify-center hover:bg-gold/10 transition">
@@ -301,87 +313,238 @@
     <svg class="w-8 h-8 sm:w-9 sm:h-9" viewBox="0 0 24 24" fill="currentColor"><use href="#wa-icon"></use></svg>
   </a>
 
-  <!-- ============ MODAL: PAINEL ADMINISTRATIVO ============ -->
+  <!-- ============ LOGIN DO ADMINISTRADOR ============ -->
   <div id="adminModal" class="hidden fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
-    <div class="min-h-full flex items-start sm:items-center justify-center p-4">
-      <div class="relative w-full max-w-3xl bg-graphite border border-gold/40 p-6 sm:p-9 my-6">
-        <button id="adminClose" class="absolute top-4 right-4 text-gold-light hover:text-white" aria-label="Fechar painel">
+    <div class="min-h-full flex items-center justify-center p-4">
+      <div class="relative w-full max-w-md bg-graphite border border-gold/40 p-8 sm:p-10">
+        <button id="adminClose" class="absolute top-4 right-4 text-gold-light hover:text-white" aria-label="Fechar">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
-
-        <!-- Tela de login -->
         <div id="adminLogin">
-          <h2 id="adminTitle" class="font-serif text-3xl gold-text font-semibold mb-2">Painel Administrativo</h2>
-          <p class="text-sm text-cream/60 mb-6">Acesso restrito. Informe e-mail e senha para continuar.</p>
-          <form id="loginForm" class="space-y-4 max-w-sm">
+          <svg viewBox="0 0 120 60" class="w-24 mx-auto mb-4 drop-shadow-[0_0_18px_rgba(212,175,55,.35)]" aria-hidden="true"><use href="#arpejo-mark"></use></svg>
+          <h2 id="adminTitle" class="font-serif text-3xl gold-text font-semibold text-center mb-1">Área restrita</h2>
+          <p class="text-sm text-cream/60 text-center mb-7">Entre com seu e-mail e senha para acessar o painel.</p>
+          <form id="loginForm" class="space-y-4">
             <input id="adminEmail" type="email" class="field" placeholder="E-mail" autocomplete="username" autocapitalize="off" spellcheck="false" required />
             <input id="adminPass" type="password" class="field" placeholder="Senha" autocomplete="current-password" required />
             <p id="loginError" class="hidden text-sm text-red-400">E-mail ou senha incorretos.</p>
-            <button type="submit" class="gold-btn px-8 py-3 text-xs">Entrar</button>
+            <button type="submit" class="gold-btn w-full px-8 py-3.5 text-xs">Entrar</button>
           </form>
-        </div>
-
-        <!-- Área logada -->
-        <div id="adminArea" class="hidden">
-          <div class="flex items-center justify-between mb-6 pr-8">
-            <h2 id="formTitle" class="font-serif text-3xl gold-text font-semibold">Cadastrar Perfume</h2>
-            <button id="logoutBtn" class="text-[11px] uppercase tracking-[.2em] text-cream/50 hover:text-gold-light">Sair</button>
-          </div>
-
-          <form id="perfumeForm" class="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fNome">Nome do Perfume *</label>
-              <input id="fNome" class="field" required maxlength="60" placeholder="Ex.: Noir Absolu" />
-            </div>
-            <div>
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFamilia">Família Olfativa *</label>
-              <input id="fFamilia" class="field" required maxlength="40" placeholder="Ex.: Amadeirado Oriental" />
-            </div>
-            <div>
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fPreco">Preço (R$) *</label>
-              <input id="fPreco" type="number" step="0.01" min="0" class="field" required placeholder="Ex.: 289.90" />
-            </div>
-            <div>
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fLink">Link da foto (opcional)</label>
-              <input id="fLink" type="url" class="field" placeholder="https://..." />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFile">Ou envie uma foto do produto</label>
-              <input id="fFile" type="file" accept="image/*" class="field file:mr-4 file:border-0 file:bg-gold file:text-ink file:px-4 file:py-1.5 file:text-xs file:uppercase file:tracking-wider" />
-              <p class="text-[11px] text-cream/40 mt-1">JPG, PNG ou WebP. A imagem é reduzida automaticamente e enviada ao servidor.</p>
-              <p id="editHint" class="hidden text-[11px] text-gold-light mt-1">Editando: a foto atual será mantida, a menos que você envie outra ou informe um novo link.</p>
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fDesc">Descrição *</label>
-              <textarea id="fDesc" rows="3" class="field" required maxlength="300" placeholder="Uma breve descrição sensorial..."></textarea>
-            </div>
-            <div>
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fTopo">Notas de Topo *</label>
-              <input id="fTopo" class="field" required maxlength="80" placeholder="Bergamota, Limão Siciliano" />
-            </div>
-            <div>
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fCoracao">Notas de Coração *</label>
-              <input id="fCoracao" class="field" required maxlength="80" placeholder="Jasmim, Rosa" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFundo">Notas de Fundo *</label>
-              <input id="fFundo" class="field" required maxlength="80" placeholder="Âmbar, Sândalo, Baunilha" />
-            </div>
-            <div class="sm:col-span-2 flex flex-wrap gap-3 pt-2">
-              <button id="submitBtn" type="submit" class="gold-btn px-8 py-3 text-xs">Adicionar à Vitrine</button>
-              <button type="reset" class="outline-btn px-6 py-3 text-xs">Limpar</button>
-              <button id="cancelEdit" type="button" class="hidden outline-btn px-6 py-3 text-xs">Cancelar edição</button>
-            </div>
-          </form>
-
-          <div class="gold-line my-8"></div>
-
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-serif text-2xl">Perfumes cadastrados <span id="countBadge" class="text-gold text-lg"></span></h3>
-          </div>
-          <ul id="adminList" class="space-y-3"></ul>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ============ PAINEL ADMINISTRATIVO (tela cheia) ============ -->
+  <div id="adminApp" class="hidden fixed inset-0 z-[60] bg-ink overflow-y-auto" role="dialog" aria-modal="true" aria-label="Painel administrativo">
+    <div class="min-h-full lg:pl-64">
+
+      <!-- Menu lateral (no celular vira uma barra no topo) -->
+      <aside class="bg-coal border-b border-gold/20 lg:border-b-0 lg:border-r lg:fixed lg:inset-y-0 lg:left-0 lg:w-64 flex flex-col">
+        <div class="flex items-center justify-between px-5 pt-4 pb-3 lg:py-8 lg:block">
+          <div class="flex items-center gap-3">
+            <svg viewBox="0 0 120 60" class="w-11 h-6" aria-hidden="true"><use href="#arpejo-mark"></use></svg>
+            <div>
+              <p class="font-serif text-xl tracking-[.2em] gold-text font-semibold leading-none">ARPEJO</p>
+              <p class="text-[10px] uppercase tracking-[.3em] text-cream/50 mt-1.5">Painel admin</p>
+            </div>
+          </div>
+          <div class="flex gap-4 lg:hidden text-[11px] uppercase tracking-[.15em]">
+            <button data-admin-close-app class="text-gold-light">Ver site</button>
+            <button data-admin-logout class="text-cream/50">Sair</button>
+          </div>
+        </div>
+
+        <nav class="flex lg:flex-col gap-1 px-3 pb-3 lg:pb-0 overflow-x-auto" aria-label="Seções do painel">
+          <button data-tab="dash" class="tab-btn" aria-selected="true">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" d="M4 20V11M10 20V5M16 20v-8M21 20H3"/></svg>
+            Visão geral
+          </button>
+          <button data-tab="perfumes" class="tab-btn" aria-selected="false">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
+            Perfumes
+          </button>
+          <button data-tab="form" class="tab-btn" aria-selected="false">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+            <span id="tabFormLabel">Novo perfume</span>
+          </button>
+        </nav>
+
+        <div class="hidden lg:flex flex-col gap-2 mt-auto p-4 border-t border-gold/10">
+          <button data-admin-close-app class="outline-btn px-4 py-2.5 text-[11px]">Ver o site</button>
+          <button data-admin-logout class="text-[11px] uppercase tracking-[.2em] text-cream/50 hover:text-gold-light py-2">Sair</button>
+        </div>
+      </aside>
+
+      <main class="p-5 sm:p-8 lg:p-10 max-w-6xl">
+
+        <!-- ===== VISÃO GERAL ===== -->
+        <section data-panel="dash">
+          <header class="flex flex-wrap items-end justify-between gap-4 mb-8">
+            <div>
+              <p class="text-xs uppercase tracking-[.4em] text-gold mb-2">Visão geral</p>
+              <h1 class="font-serif text-4xl font-semibold">Desempenho do site</h1>
+            </div>
+            <div id="periodBar" class="inline-flex border border-gold/30 divide-x divide-gold/20" role="group" aria-label="Período">
+              <button data-dias="7" class="seg-btn" aria-pressed="false">7 dias</button>
+              <button data-dias="30" class="seg-btn" aria-pressed="true">30 dias</button>
+              <button data-dias="90" class="seg-btn" aria-pressed="false">90 dias</button>
+            </div>
+          </header>
+
+          <!-- Aviso quando as métricas ainda não foram ativadas no banco -->
+          <div id="dashSetup" class="hidden card p-6 mb-8">
+            <h2 class="font-serif text-2xl mb-2">Ative as métricas</h2>
+            <p id="setupMsg" class="text-sm text-cream/70 leading-relaxed"></p>
+          </div>
+
+          <div id="dashBody" class="transition-opacity duration-200">
+            <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+              <div class="card p-5">
+                <p class="text-xs text-cream/60">Visitas</p>
+                <p id="kVisitas" class="mt-3 text-4xl font-semibold text-cream leading-none">0</p>
+                <p id="kVisitasHint" class="mt-2 text-xs text-cream/45">&nbsp;</p>
+              </div>
+              <div class="card p-5">
+                <p class="text-xs text-cream/60">Visitantes únicos</p>
+                <p id="kVisitantes" class="mt-3 text-4xl font-semibold text-cream leading-none">0</p>
+                <p class="mt-2 text-xs text-cream/45">pessoas diferentes</p>
+              </div>
+              <div class="card p-5">
+                <p class="text-xs text-cream/60">Cliques em “Encomendar”</p>
+                <p id="kCliques" class="mt-3 text-4xl font-semibold text-cream leading-none">0</p>
+                <p id="kCliquesHint" class="mt-2 text-xs text-cream/45">&nbsp;</p>
+              </div>
+              <div class="card p-5">
+                <p class="text-xs text-cream/60">Perfumes publicados</p>
+                <p id="kPerfumes" class="mt-3 text-4xl font-semibold text-cream leading-none">0</p>
+                <p class="mt-2 text-xs text-cream/45">na vitrine agora</p>
+              </div>
+            </div>
+
+            <div class="card p-5 sm:p-6 mb-8">
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <h2 id="chartTitle" class="font-serif text-2xl">Visitas por dia</h2>
+                <div id="seriesBar" class="inline-flex border border-gold/30 divide-x divide-gold/20" role="group" aria-label="Dado do gráfico">
+                  <button data-serie="visitas" class="seg-btn" aria-pressed="true">Visitas</button>
+                  <button data-serie="cliques" class="seg-btn" aria-pressed="false">Cliques</button>
+                </div>
+              </div>
+              <div id="chartWrap" class="relative outline-none focus-visible:ring-1 focus-visible:ring-gold/60" tabindex="0" role="group" aria-label="Gráfico por dia. Use as setas do teclado para ler cada dia.">
+                <svg id="chartSvg" class="w-full h-auto block" role="img" aria-hidden="true"></svg>
+                <div id="chartTip" class="hidden absolute top-0 -translate-x-1/2 -translate-y-full bg-ink border border-gold/40 px-3 py-2 pointer-events-none z-10"></div>
+              </div>
+              <details class="mt-5 text-sm">
+                <summary class="cursor-pointer text-cream/60 hover:text-gold-light select-none">Ver dados em tabela</summary>
+                <div class="overflow-auto max-h-72 mt-3 border border-gold/15">
+                  <table id="chartTable" class="w-full text-left text-xs"></table>
+                </div>
+              </details>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div class="card p-5 sm:p-6 lg:col-span-2">
+                <h2 class="font-serif text-2xl">Perfumes mais clicados</h2>
+                <p class="text-xs text-cream/50 mt-1 mb-5">Cliques no botão “Encomendar via WhatsApp” de cada perfume.</p>
+                <ol id="rankList" class="space-y-4"></ol>
+              </div>
+              <div class="card p-5 sm:p-6">
+                <h2 class="font-serif text-2xl">Outros cliques</h2>
+                <p class="text-xs text-cream/50 mt-1 mb-5">No período selecionado.</p>
+                <dl class="space-y-4 text-sm">
+                  <div class="flex items-baseline justify-between gap-3"><dt class="text-cream/70">WhatsApp (botões gerais)</dt><dd id="oWhats" class="font-semibold">0</dd></div>
+                  <div class="flex items-baseline justify-between gap-3"><dt class="text-cream/70">Instagram</dt><dd id="oInsta" class="font-semibold">0</dd></div>
+                  <div class="flex items-baseline justify-between gap-3 border-t border-gold/15 pt-4"><dt class="text-cream/70">Visitas pelo celular</dt><dd id="oMobile" class="font-semibold">0%</dd></div>
+                </dl>
+              </div>
+            </div>
+            <p class="text-[11px] text-cream/35 mt-6">Suas próprias visitas não são contadas enquanto você estiver logado neste navegador.</p>
+          </div>
+        </section>
+
+        <!-- ===== PERFUMES PUBLICADOS ===== -->
+        <section data-panel="perfumes" class="hidden">
+          <header class="flex flex-wrap items-end justify-between gap-4 mb-6">
+            <div>
+              <p class="text-xs uppercase tracking-[.4em] text-gold mb-2">Catálogo</p>
+              <h1 class="font-serif text-4xl font-semibold">Perfumes publicados <span id="countBadge" class="text-gold text-2xl"></span></h1>
+            </div>
+            <button id="newPerfumeBtn" class="gold-btn px-6 py-3 text-xs">+ Novo perfume</button>
+          </header>
+          <div class="flex flex-wrap gap-3 mb-6">
+            <input id="searchInput" type="search" class="field sm:max-w-xs" placeholder="Buscar por nome ou família…" aria-label="Buscar perfumes" />
+            <select id="sortSelect" class="field sm:max-w-[15rem]" aria-label="Ordenar">
+              <option value="recentes">Mais recentes</option>
+              <option value="cliques">Mais clicados</option>
+              <option value="nome">Nome (A–Z)</option>
+              <option value="preco_asc">Menor preço</option>
+              <option value="preco_desc">Maior preço</option>
+            </select>
+          </div>
+          <ul id="adminList" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"></ul>
+        </section>
+
+        <!-- ===== NOVO / EDITAR PERFUME ===== -->
+        <section data-panel="form" class="hidden">
+          <header class="mb-6">
+            <p class="text-xs uppercase tracking-[.4em] text-gold mb-2">Catálogo</p>
+            <h1 id="formTitle" class="font-serif text-4xl font-semibold">Novo perfume</h1>
+          </header>
+          <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_21rem] gap-8 items-start">
+            <form id="perfumeForm" class="card p-5 sm:p-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fNome">Nome do perfume *</label>
+                <input id="fNome" class="field" required maxlength="60" placeholder="Ex.: Noir Absolu" />
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFamilia">Família olfativa *</label>
+                <input id="fFamilia" class="field" required maxlength="40" placeholder="Ex.: Amadeirado Oriental" />
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fPreco">Preço (R$) *</label>
+                <input id="fPreco" type="number" step="0.01" min="0" class="field" required placeholder="Ex.: 289.90" />
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fLink">Link da foto (opcional)</label>
+                <input id="fLink" type="url" class="field" placeholder="https://..." />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFile">Ou envie uma foto do produto</label>
+                <input id="fFile" type="file" accept="image/jpeg,image/png,image/webp" class="field file:mr-4 file:border-0 file:bg-gold file:text-ink file:px-4 file:py-1.5 file:text-xs file:uppercase file:tracking-wider" />
+                <p class="text-[11px] text-cream/40 mt-1">JPG, PNG ou WebP. A imagem é reduzida automaticamente e enviada ao servidor.</p>
+                <p id="editHint" class="hidden text-[11px] text-gold-light mt-1">Editando: a foto atual será mantida, a menos que você envie outra ou informe um novo link.</p>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fDesc">Descrição *</label>
+                <textarea id="fDesc" rows="3" class="field" required maxlength="300" placeholder="Uma breve descrição sensorial..."></textarea>
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fTopo">Notas de topo *</label>
+                <input id="fTopo" class="field" required maxlength="80" placeholder="Bergamota, Limão Siciliano" />
+              </div>
+              <div>
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fCoracao">Notas de coração *</label>
+                <input id="fCoracao" class="field" required maxlength="80" placeholder="Jasmim, Rosa" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] uppercase tracking-[.2em] text-gold mb-1.5" for="fFundo">Notas de fundo *</label>
+                <input id="fFundo" class="field" required maxlength="80" placeholder="Âmbar, Sândalo, Baunilha" />
+              </div>
+              <div class="sm:col-span-2 flex flex-wrap gap-3 pt-2">
+                <button id="submitBtn" type="submit" class="gold-btn px-8 py-3 text-xs">Publicar perfume</button>
+                <button type="reset" class="outline-btn px-6 py-3 text-xs">Limpar</button>
+                <button id="cancelEdit" type="button" class="hidden outline-btn px-6 py-3 text-xs">Cancelar edição</button>
+              </div>
+            </form>
+
+            <div class="xl:sticky xl:top-8">
+              <p class="text-xs uppercase tracking-[.3em] text-gold mb-3">Pré-visualização na vitrine</p>
+              <div id="previewCard" class="pointer-events-none select-none"></div>
+            </div>
+          </div>
+        </section>
+
+      </main>
     </div>
   </div>
 
@@ -493,7 +656,7 @@
     // Converte uma linha do banco para o formato da página
     const fromRow = r => ({
       id: r.id, nome: r.nome, familia: r.familia, preco: r.preco, desc: r.descricao,
-      topo: r.nota_topo, coracao: r.nota_coracao, fundo: r.nota_fundo, img: r.imagem_url || ''
+      topo: r.nota_topo, coracao: r.nota_coracao, fundo: r.nota_fundo, img: r.imagem_url || '', criado: r.criado_em
     });
 
     async function loadPerfumes() {
@@ -507,18 +670,15 @@
     }
 
     /* ---------- Renderização da vitrine ---------- */
-    function renderVitrine() {
-      const grid = $('#vitrine');
-      if (!loaded) {
-        grid.innerHTML = `<p class="col-span-full text-center text-cream/50 font-light">Carregando fragrâncias…</p>`;
-        return;
-      }
-      // Sem perfumes cadastrados (ou banco indisponível): mostra os itens de exemplo
-      const list = perfumes.length ? perfumes : DEFAULTS;
-      grid.innerHTML = list.map(p => {
-        const img = safeImg(p.img) || bottleSvg();
-        const msg = `Olá! Gostaria de encomendar o perfume "${p.nome}" da Arpejo Perfumaria.`;
-        return `
+    // Card de perfume: usado na vitrine e na pré-visualização do painel
+    function cardHtml(p, preview = false) {
+      // na pré-visualização do painel a foto escolhida é um endereço temporário local (blob:)
+      const img = (preview && /^blob:/.test(p.img || '')) ? p.img : (safeImg(p.img) || bottleSvg());
+      const msg = `Olá! Gostaria de encomendar o perfume "${p.nome}" da Arpejo Perfumaria.`;
+      const cta = preview
+        ? `<span class="gold-btn block text-center px-5 py-3.5 text-[11px]">Encomendar via WhatsApp</span>`
+        : `<a href="${whatsLink(msg)}" target="_blank" rel="noopener" data-track="clique_encomendar" data-pid="${esc(p.id)}" data-pname="${esc(p.nome)}" class="gold-btn block text-center px-5 py-3.5 text-[11px]">Encomendar via WhatsApp</a>`;
+      return `
         <article class="card flex flex-col reveal show">
           <div class="aspect-[4/5] overflow-hidden bg-ink relative">
             <img src="${esc(img)}" alt="Frasco do perfume ${esc(p.nome)}" loading="lazy"
@@ -536,36 +696,31 @@
             </dl>
             <div class="mt-auto">
               <p class="font-serif text-3xl text-cream mb-4">${brl(p.preco)}</p>
-              <a href="${whatsLink(msg)}" target="_blank" rel="noopener" class="gold-btn block text-center px-5 py-3.5 text-[11px]">Encomendar via WhatsApp</a>
+              ${cta}
             </div>
           </div>
         </article>`;
-      }).join('');
     }
 
-    /* ---------- Painel Admin: lista ---------- */
-    function renderAdminList() {
-      $('#countBadge').textContent = `(${perfumes.length})`;
-      const ul = $('#adminList');
-      if (!perfumes.length) {
-        ul.innerHTML = `<li class="text-sm text-cream/50">Nenhum perfume cadastrado.</li>`;
+    function renderVitrine() {
+      const grid = $('#vitrine');
+      if (!loaded) {
+        grid.innerHTML = `<p class="col-span-full text-center text-cream/50 font-light">Carregando fragrâncias…</p>`;
         return;
       }
-      ul.innerHTML = perfumes.map(p => `
-        <li class="flex items-center gap-4 border border-gold/20 bg-ink/60 p-3">
-          <img src="${esc(safeImg(p.img) || bottleSvg())}" alt="" class="w-14 h-14 object-cover border border-gold/30" />
-          <div class="flex-1 min-w-0">
-            <p class="font-serif text-xl truncate">${esc(p.nome)}</p>
-            <p class="text-xs text-cream/50 truncate">${esc(p.familia)} · ${brl(p.preco)}</p>
-          </div>
-          <div class="flex flex-col sm:flex-row gap-2 shrink-0">
-            <button data-edit="${esc(p.id)}" class="text-[11px] uppercase tracking-[.15em] text-gold-light hover:text-white border border-gold/50 px-3 py-2">Editar</button>
-            <button data-del="${esc(p.id)}" class="text-[11px] uppercase tracking-[.15em] text-red-400 hover:text-red-300 border border-red-400/40 px-3 py-2">Excluir</button>
-          </div>
-        </li>`).join('');
+      // Sem perfumes cadastrados (ou banco indisponível): mostra os itens de exemplo
+      const list = perfumes.length ? perfumes : DEFAULTS;
+      grid.innerHTML = list.map(p => cardHtml(p)).join('');
     }
 
-    function refreshAll() { renderVitrine(); renderAdminList(); }
+    /* ---------- Apoio ---------- */
+    const fmtInt = n => Number(n || 0).toLocaleString('pt-BR');
+    const pct = (a, b) => b > 0 ? Math.round((a / b) * 100) : 0;
+    const fmtDate = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('pt-BR'); };
+    const WEEK = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+    const fmtDay = d => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+    function refreshAll() { renderVitrine(); renderPerfumesTab(); renderDash(); }
 
     /* ---------- Prepara a foto: reduz e converte para JPEG ---------- */
     function fileToBlob(file, maxW = 900) {
@@ -589,37 +744,90 @@
       });
     }
 
-    /* ---------- Painel Admin ---------- */
-    // "isAdmin" só controla o que a tela mostra. A segurança de verdade está no banco:
-    // as regras (RLS) só aceitam gravar/excluir de um usuário logado.
-    const modal = $('#adminModal');
-    let isAdmin = false;
+    /* ---------- Métricas: registro de visitas e cliques ---------- */
+    // Cada visita e cada clique vira uma linha na tabela "eventos" (veja supabase/metricas.sql).
+    // O código do visitante é anônimo e fica só no navegador. Falhas aqui nunca afetam o site.
+    const VID_KEY = 'arpejo_vid', VISIT_KEY = 'arpejo_visit_sent';
+    let hasSession = false;        // admin logado neste navegador: não conta como visita
 
-    function showAdminState() {
-      $('#adminLogin').classList.toggle('hidden', isAdmin);
-      $('#adminArea').classList.toggle('hidden', !isAdmin);
-      if (isAdmin) renderAdminList();
+    function visitorId() {
+      try {
+        let v = localStorage.getItem(VID_KEY);
+        if (!v) {
+          v = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2);
+          localStorage.setItem(VID_KEY, v);
+        }
+        return v;
+      } catch (_) { return null; }
     }
-    async function openAdmin() {
-      modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
-      if (sb) { const { data } = await sb.auth.getSession(); isAdmin = !!(data && data.session); }
-      showAdminState();
-      if (!isAdmin) setTimeout(() => $('#adminEmail').focus(), 50);
+
+    async function track(tipo, extra = {}) {
+      if (!sb || hasSession) return;
+      try {
+        await sb.from('eventos').insert({
+          tipo,
+          visitante: visitorId(),
+          dispositivo: window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop',
+          ...extra
+        });
+      } catch (_) { /* métricas nunca devem quebrar o site */ }
     }
-    function closeAdmin() {
-      modal.classList.add('hidden'); document.body.style.overflow = '';
-      // tira o "#admin" do endereço, para poder abrir de novo
-      if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search);
+
+    async function refreshSession() {
+      if (!sb) return;
+      try { const { data } = await sb.auth.getSession(); hasSession = isAdmin = !!(data && data.session); } catch (_) {}
     }
+
+    async function initTracking() {
+      await refreshSession();
+      if (hasSession || location.hash === '#admin') return;
+      try {
+        if (sessionStorage.getItem(VISIT_KEY)) return;     // uma visita por sessão do navegador
+        sessionStorage.setItem(VISIT_KEY, '1');
+      } catch (_) {}
+      track('visita');
+    }
+
+    // Cliques: qualquer elemento com data-track (botões Encomendar, WhatsApp geral, Instagram)
+    document.addEventListener('click', e => {
+      const el = e.target.closest('[data-track]');
+      if (el) track(el.dataset.track, { perfume_id: el.dataset.pid || null, perfume_nome: el.dataset.pname || null });
+    });
+
+    /* ---------- Painel Admin: acesso ---------- */
+    // "isAdmin" só controla o que a tela mostra. A segurança de verdade está no banco:
+    // as regras (RLS) só aceitam gravar/excluir/ler métricas de um usuário logado.
+    const modal = $('#adminModal');
+    const app = $('#adminApp');
+    let isAdmin = false;
+    let activeTab = 'dash';
+
+    const clearHash = () => { if (location.hash === '#admin') history.replaceState(null, '', location.pathname + location.search); };
+    function showLogin() {
+      app.classList.add('hidden'); modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
+      setTimeout(() => $('#adminEmail').focus(), 50);
+    }
+    function closeLogin() { modal.classList.add('hidden'); document.body.style.overflow = ''; clearHash(); }
+    function showApp() {
+      modal.classList.add('hidden'); app.classList.remove('hidden'); document.body.style.overflow = 'hidden';
+      showTab(activeTab); renderPerfumesTab(); loadMetricas();
+    }
+    function closeApp() { app.classList.add('hidden'); document.body.style.overflow = ''; clearHash(); }
+    async function openAdmin() { await refreshSession(); isAdmin ? showApp() : showLogin(); }
 
     // Sessão expirada: volta para a tela de login
-    function sessionExpired() { isAdmin = false; showAdminState(); toast('Sessão expirada. Entre novamente.'); }
+    function sessionExpired() { isAdmin = false; hasSession = false; showLogin(); toast('Sessão expirada. Entre novamente.'); }
     const isAuthError = err => err && (err.code === '42501' || err.status === 401 || err.status === 403);
 
     $$('[data-admin-open]').forEach(b => b.addEventListener('click', () => { $('#mobileMenu').classList.add('hidden'); openAdmin(); }));
-    $('#adminClose').addEventListener('click', closeAdmin);
-    modal.addEventListener('click', e => { if (e.target === modal) closeAdmin(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeAdmin(); });
+    $('#adminClose').addEventListener('click', closeLogin);
+    modal.addEventListener('click', e => { if (e.target === modal) closeLogin(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeLogin(); });
+    $$('[data-admin-close-app]').forEach(b => b.addEventListener('click', closeApp));
+    $$('[data-admin-logout]').forEach(b => b.addEventListener('click', async () => {
+      if (sb) await sb.auth.signOut();
+      isAdmin = false; hasSession = false; closeApp();
+    }));
 
     $('#loginForm').addEventListener('submit', async e => {
       e.preventDefault();
@@ -634,31 +842,304 @@
       if (error) { $('#loginError').classList.remove('hidden'); return; }
       $('#adminEmail').value = ''; $('#adminPass').value = '';
       $('#loginError').classList.add('hidden');
-      isAdmin = true; showAdminState();
+      isAdmin = true; hasSession = true; activeTab = 'dash'; showApp();
     });
 
-    $('#logoutBtn').addEventListener('click', async () => {
-      if (sb) await sb.auth.signOut();
-      isAdmin = false; showAdminState();
+    /* ---------- Painel Admin: abas ---------- */
+    function showTab(name) {
+      activeTab = name;
+      $$('[data-panel]').forEach(s => s.classList.toggle('hidden', s.dataset.panel !== name));
+      $$('[data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+      app.scrollTo({ top: 0 });
+      if (name === 'form') renderPreview();
+      if (name === 'dash' && metricas) renderChart();     // recalcula o tamanho agora que a aba está visível
+    }
+    $$('[data-tab]').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+    /* ---------- Painel Admin: visão geral (métricas) ---------- */
+    let periodo = 30, serie = 'visitas';
+    let metricas = null, metricasErro = null, metricasReq = 0;
+
+    async function loadMetricas() {
+      if (!sb || !isAdmin) return;
+      const my = ++metricasReq;
+      $('#dashBody').classList.add('opacity-60');          // mantém o quadro, só esmaece
+      const { data, error } = await sb.rpc('metricas', { dias: periodo });
+      if (my !== metricasReq) return;                      // chegou uma resposta mais nova
+      $('#dashBody').classList.remove('opacity-60');
+      if (error && isAuthError(error)) { sessionExpired(); return; }
+      metricas = error ? null : data;
+      metricasErro = error || null;
+      renderDash(); renderPerfumesTab();
+    }
+
+    $$('#periodBar [data-dias]').forEach(b => b.addEventListener('click', () => {
+      periodo = Number(b.dataset.dias);
+      $$('#periodBar [data-dias]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      loadMetricas();
+    }));
+    $$('#seriesBar [data-serie]').forEach(b => b.addEventListener('click', () => {
+      serie = b.dataset.serie;
+      $$('#seriesBar [data-serie]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      renderChart();
+    }));
+
+    // Um item por dia do período, mesmo os dias sem visitas
+    function daySeries() {
+      const map = new Map(((metricas && metricas.por_dia) || []).map(d => [d.dia, d]));
+      const out = [], today = new Date();
+      today.setHours(12, 0, 0, 0);
+      for (let i = periodo - 1; i >= 0; i--) {
+        const date = new Date(today); date.setDate(today.getDate() - i);
+        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const r = map.get(key) || {};
+        out.push({ key, date, visitas: Number(r.visitas || 0), cliques: Number(r.cliques || 0) });
+      }
+      return out;
+    }
+
+    function renderDash() {
+      $('#kPerfumes').textContent = fmtInt(perfumes.length);
+      const setup = $('#dashSetup'), body = $('#dashBody');
+      if (metricasErro) {
+        const msg = metricasErro.message || '';
+        const missing = metricasErro.code === 'PGRST202' || metricasErro.code === '42883' || /could not find the function|does not exist/i.test(msg);
+        $('#setupMsg').textContent = missing
+          ? 'As métricas ainda não foram ativadas no banco de dados. No Supabase, abra o SQL Editor, cole o conteúdo do arquivo supabase/metricas.sql (está no repositório do site) e clique em Run. Depois recarregue esta página.'
+          : 'Não foi possível carregar as métricas: ' + (msg || 'erro desconhecido');
+        setup.classList.remove('hidden'); body.classList.add('hidden');
+        return;
+      }
+      setup.classList.add('hidden'); body.classList.remove('hidden');
+      const m = metricas || {};
+      const visitas = Number(m.visitas || 0), cliques = Number(m.cliques_encomendar || 0);
+      $('#kVisitas').textContent = fmtInt(visitas);
+      $('#kVisitasHint').textContent = visitas ? `${pct(Number(m.mobile || 0), visitas)}% pelo celular` : 'sem visitas no período';
+      $('#kVisitantes').textContent = fmtInt(m.visitantes);
+      $('#kCliques').textContent = fmtInt(cliques);
+      $('#kCliquesHint').textContent = visitas ? `${pct(cliques, visitas)}% das visitas` : 'sem cliques no período';
+      $('#oWhats').textContent = fmtInt(m.cliques_whatsapp);
+      $('#oInsta').textContent = fmtInt(m.cliques_instagram);
+      $('#oMobile').textContent = pct(Number(m.mobile || 0), visitas) + '%';
+      renderChart(); renderRank();
+    }
+
+    // Gráfico de colunas em SVG. Uma única série por vez (visitas OU cliques), um só eixo.
+    const CH = { W: 760, H: 260, pl: 40, pr: 12, pt: 12, pb: 30 };
+    let chartDays = [], tipIndex = -1, chartScale = { top: 4 };
+
+    function niceStep(raw) {
+      const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+      const opts = pow >= 10 ? [1, 2, 2.5, 5, 10] : [1, 2, 5, 10];
+      for (const o of opts) if (o * pow >= raw) return o * pow;
+      return 10 * pow;
+    }
+
+    function renderChart() {
+      chartDays = daySeries();
+      const key = serie, n = chartDays.length;
+      // o desenho acompanha a largura da tela (no celular os textos continuam legíveis)
+      CH.W = Math.max(300, Math.min(760, $('#chartWrap').clientWidth || 760));
+      CH.H = CH.W < 520 ? 220 : 260;
+      const { W, H, pl, pr, pt, pb } = CH;
+      const iw = W - pl - pr, ih = H - pt - pb, step = iw / n;
+      const bw = Math.min(24, step * 0.6);
+      const maxV = Math.max(1, ...chartDays.map(d => d[key]));
+      const stepV = niceStep(Math.max(1, maxV / 4)), top = stepV * 4;
+      chartScale = { top };
+      const y = v => pt + ih - (v / top) * ih;
+
+      let grid = '', bars = '', labels = '';
+      for (let i = 0; i <= 4; i++) {
+        const v = stepV * i, yy = y(v);
+        grid += `<line x1="${pl}" x2="${W - pr}" y1="${yy}" y2="${yy}" stroke="rgba(245,240,230,${i === 0 ? .22 : .08})" stroke-width="1"/>`;
+        grid += `<text x="${pl - 8}" y="${yy + 3.5}" text-anchor="end" font-size="10" fill="rgba(245,240,230,.5)">${fmtInt(v)}</text>`;
+      }
+      const every = Math.ceil(n / 8);
+      chartDays.forEach((d, i) => {
+        const cx = pl + step * i + step / 2, x = cx - bw / 2, v = d[key];
+        if (v > 0) {
+          const h = (v / top) * ih, yy = pt + ih - h, r = Math.min(4, bw / 2, h);
+          // coluna com a ponta de cima arredondada (4px) e a base reta
+          bars += `<path class="bar" data-i="${i}" d="M${x},${pt + ih} V${yy + r} Q${x},${yy} ${x + r},${yy} H${x + bw - r} Q${x + bw},${yy} ${x + bw},${yy + r} V${pt + ih} Z"/>`;
+        }
+        if ((n - 1 - i) % every === 0) labels += `<text x="${cx}" y="${H - 8}" text-anchor="middle" font-size="10" fill="rgba(245,240,230,.5)">${fmtDay(d.date)}</text>`;
+      });
+      const svg = $('#chartSvg');
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.innerHTML = grid + bars + labels;
+
+      $('#chartTitle').textContent = key === 'visitas' ? 'Visitas por dia' : 'Cliques em “Encomendar” por dia';
+      $('#chartTable').innerHTML =
+        `<thead class="sticky top-0 bg-graphite text-cream/60"><tr><th class="px-3 py-2 font-normal">Dia</th><th class="px-3 py-2 font-normal">Visitas</th><th class="px-3 py-2 font-normal">Cliques em Encomendar</th></tr></thead><tbody>` +
+        chartDays.slice().reverse().map(d => `<tr class="border-t border-gold/10"><td class="px-3 py-1.5">${WEEK[d.date.getDay()]}, ${fmtDay(d.date)}</td><td class="px-3 py-1.5">${fmtInt(d.visitas)}</td><td class="px-3 py-1.5">${fmtInt(d.cliques)}</td></tr>`).join('') +
+        `</tbody>`;
+      hideTip();
+    }
+
+    // Dica de valor: aparece ao passar o mouse, tocar ou usar as setas do teclado
+    function showTip(i) {
+      const d = chartDays[i];
+      if (!d) { hideTip(); return; }
+      tipIndex = i;
+      $$('#chartSvg .bar').forEach(b => b.classList.toggle('on', Number(b.dataset.i) === i));
+      const tip = $('#chartTip');
+      tip.replaceChildren();
+      const v = document.createElement('div');
+      v.className = 'text-lg font-semibold text-cream leading-none';
+      v.textContent = fmtInt(d[serie]);
+      const l = document.createElement('div');
+      l.className = 'text-[11px] text-cream/60 mt-1 whitespace-nowrap';
+      l.textContent = `${serie === 'visitas' ? 'Visitas' : 'Cliques em Encomendar'} · ${WEEK[d.date.getDay()]}, ${fmtDay(d.date)}`;
+      tip.append(v, l);
+      tip.classList.remove('hidden');
+      const svgW = $('#chartSvg').clientWidth, wrapW = $('#chartWrap').clientWidth;
+      const cx = ((CH.pl + ((CH.W - CH.pl - CH.pr) / chartDays.length) * (i + .5)) / CH.W) * svgW;
+      const half = tip.offsetWidth / 2;
+      tip.style.left = Math.max(half, Math.min(wrapW - half, cx)) + 'px';
+      // fica logo acima da coluna (sem cobrir o título do gráfico)
+      const ih = CH.H - CH.pt - CH.pb;
+      const yv = CH.pt + ih - (d[serie] / chartScale.top) * ih;
+      tip.style.top = Math.max(tip.offsetHeight + 2, (yv / CH.H) * $('#chartSvg').clientHeight - 12) + 'px';
+    }
+    function hideTip() {
+      tipIndex = -1;
+      $('#chartTip').classList.add('hidden');
+      $$('#chartSvg .bar.on').forEach(b => b.classList.remove('on'));
+    }
+    const chartWrap = $('#chartWrap');
+    chartWrap.addEventListener('pointermove', e => {
+      const r = $('#chartSvg').getBoundingClientRect();
+      const x = (e.clientX - r.left) * (CH.W / r.width);
+      const i = Math.floor((x - CH.pl) / ((CH.W - CH.pl - CH.pr) / chartDays.length));
+      (i >= 0 && i < chartDays.length) ? showTip(i) : hideTip();
+    });
+    chartWrap.addEventListener('pointerleave', hideTip);
+    chartWrap.addEventListener('focus', () => showTip(chartDays.length - 1));
+    chartWrap.addEventListener('blur', hideTip);
+    chartWrap.addEventListener('keydown', e => {
+      if (!chartDays.length) return;
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); showTip(Math.max(0, (tipIndex < 0 ? chartDays.length : tipIndex) - 1)); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); showTip(Math.min(chartDays.length - 1, tipIndex + 1)); }
+      if (e.key === 'Escape') hideTip();
     });
 
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { if (metricas && activeTab === 'dash' && !app.classList.contains('hidden')) renderChart(); }, 150);
+    });
+
+    function renderRank() {
+      const list = (metricas && metricas.por_perfume) || [];
+      const ol = $('#rankList');
+      if (!list.length) {
+        ol.innerHTML = `<li class="text-sm text-cream/50">Nenhum clique em “Encomendar” neste período.</li>`;
+        return;
+      }
+      const max = Math.max(1, ...list.map(r => Number(r.cliques)));
+      ol.innerHTML = list.slice(0, 10).map((r, i) => `
+        <li>
+          <div class="flex items-baseline justify-between gap-3 text-sm mb-1.5">
+            <span class="truncate"><span class="text-cream/40 mr-2">${i + 1}.</span>${esc(r.nome || 'Perfume removido')}</span>
+            <span class="font-semibold shrink-0">${fmtInt(r.cliques)}</span>
+          </div>
+          <div class="h-2 bg-cream/5"><div class="h-2 rank-bar" style="width:${Math.max(2, (Number(r.cliques) / max) * 100)}%"></div></div>
+        </li>`).join('');
+    }
+
+    /* ---------- Painel Admin: lista de perfumes ---------- */
+    function renderPerfumesTab() {
+      $('#countBadge').textContent = `(${perfumes.length})`;
+      const ul = $('#adminList');
+      if (!perfumes.length) {
+        ul.innerHTML = `<li class="col-span-full card p-8 text-center">
+          <p class="font-serif text-2xl mb-2">Nenhum perfume publicado ainda</p>
+          <p class="text-sm text-cream/60">Enquanto isso, a vitrine do site mostra 3 perfumes de exemplo. Publique o primeiro perfume para substituí-los.</p>
+        </li>`;
+        return;
+      }
+      const q = ($('#searchInput').value || '').trim().toLowerCase();
+      const clicks = new Map(((metricas && metricas.por_perfume) || []).map(r => [String(r.id), Number(r.cliques)]));
+      const clicksOf = p => clicks.get(String(p.id)) || 0;
+      let list = perfumes.filter(p => !q || `${p.nome} ${p.familia}`.toLowerCase().includes(q));
+      const sort = $('#sortSelect').value;
+      if (sort === 'cliques') list.sort((a, b) => clicksOf(b) - clicksOf(a));
+      else if (sort === 'nome') list.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+      else if (sort === 'preco_asc') list.sort((a, b) => a.preco - b.preco);
+      else if (sort === 'preco_desc') list.sort((a, b) => b.preco - a.preco);
+      if (!list.length) {
+        ul.innerHTML = `<li class="col-span-full text-sm text-cream/55 py-6">Nenhum perfume encontrado para “${esc(q)}”.</li>`;
+        return;
+      }
+      ul.innerHTML = list.map(p => {
+        const c = metricasErro ? '—' : fmtInt(clicksOf(p));
+        const when = p.criado ? ` · publicado em ${fmtDate(p.criado)}` : '';
+        return `
+        <li class="card flex flex-col">
+          <div class="aspect-[4/3] overflow-hidden bg-ink relative">
+            <img src="${esc(safeImg(p.img) || bottleSvg())}" alt="" loading="lazy" class="w-full h-full object-contain"
+                 onerror="this.onerror=null;this.src='${bottleSvg()}'" />
+            <span class="absolute top-3 left-3 bg-ink/80 border border-gold/50 text-gold-light text-[10px] uppercase tracking-[.18em] px-2.5 py-1">${esc(p.familia)}</span>
+          </div>
+          <div class="p-5 flex flex-col flex-1">
+            <h3 class="font-serif text-2xl gold-text font-semibold leading-tight truncate" title="${esc(p.nome)}">${esc(p.nome)}</h3>
+            <p class="text-lg text-cream mt-1">${brl(p.preco)}</p>
+            <p class="text-xs text-cream/50 mt-2">${c} cliques em ${periodo} dias${when}</p>
+            <div class="flex gap-2 mt-auto pt-5">
+              <button data-edit="${esc(p.id)}" class="outline-btn flex-1 px-3 py-2.5 text-[11px]">Editar</button>
+              <button data-del="${esc(p.id)}" class="flex-1 text-[11px] uppercase tracking-[.15em] text-red-400 hover:text-red-300 border border-red-400/40 px-3 py-2.5">Excluir</button>
+            </div>
+          </div>
+        </li>`;
+      }).join('');
+    }
+    $('#searchInput').addEventListener('input', renderPerfumesTab);
+    $('#sortSelect').addEventListener('change', renderPerfumesTab);
+    $('#newPerfumeBtn').addEventListener('click', () => { $('#perfumeForm').reset(); showTab('form'); });
+
+    /* ---------- Painel Admin: formulário (novo / editar) ---------- */
     // Caminho do arquivo dentro do bucket, se a foto foi enviada por este painel
     const photoMarker = `/storage/v1/object/public/${CONFIG.bucket}/`;
     const storagePath = url => (url && url.includes(photoMarker)) ? decodeURIComponent(url.split(photoMarker)[1]) : null;
 
-    /* ---------- Edição de perfume ---------- */
-    let editingId = null;   // id do perfume em edição (null = cadastrando um novo)
+    let editingId = null;      // id do perfume em edição (null = cadastrando um novo)
+    let previewUrl = null;     // endereço temporário da foto escolhida, só para a pré-visualização
 
     function setEditMode(id) {
       editingId = id;
-      $('#formTitle').textContent = id ? 'Editar Perfume' : 'Cadastrar Perfume';
-      $('#submitBtn').textContent = id ? 'Salvar Alterações' : 'Adicionar à Vitrine';
+      $('#formTitle').textContent = id ? 'Editar perfume' : 'Novo perfume';
+      $('#tabFormLabel').textContent = id ? 'Editar perfume' : 'Novo perfume';
+      $('#submitBtn').textContent = id ? 'Salvar alterações' : 'Publicar perfume';
       $('#cancelEdit').classList.toggle('hidden', !id);
       $('#editHint').classList.toggle('hidden', !id);
     }
+    function dropPreviewUrl() { if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; } }
+
+    // Pré-visualização: o mesmo card da vitrine, com o que está digitado
+    function renderPreview() {
+      const v = id => $('#' + id).value.trim();
+      const old = editingId ? perfumes.find(p => p.id === editingId) : null;
+      $('#previewCard').innerHTML = cardHtml({
+        id: 'preview',
+        nome: v('fNome') || 'Nome do perfume',
+        familia: v('fFamilia') || 'Família olfativa',
+        preco: parseFloat(v('fPreco')) || 0,
+        desc: v('fDesc') || 'A descrição do perfume aparece aqui.',
+        topo: v('fTopo') || '—', coracao: v('fCoracao') || '—', fundo: v('fFundo') || '—',
+        img: previewUrl || safeImg(v('fLink')) || (old ? old.img : '')
+      }, true);
+    }
+    $('#perfumeForm').addEventListener('input', renderPreview);
+    $('#fFile').addEventListener('change', e => {
+      dropPreviewUrl();
+      const f = e.target.files[0];
+      if (f) previewUrl = URL.createObjectURL(f);
+      renderPreview();
+    });
     // "Limpar" e form.reset() também saem do modo de edição
-    $('#perfumeForm').addEventListener('reset', () => setEditMode(null));
-    $('#cancelEdit').addEventListener('click', () => $('#perfumeForm').reset());
+    $('#perfumeForm').addEventListener('reset', () => { dropPreviewUrl(); setEditMode(null); setTimeout(renderPreview, 0); });
+    $('#cancelEdit').addEventListener('click', () => { $('#perfumeForm').reset(); showTab('perfumes'); });
 
     function startEdit(id) {
       const p = perfumes.find(x => x.id === id);
@@ -675,7 +1156,7 @@
       $('#fFundo').value = p.fundo;
       // Só preenche o link se for uma foto externa; fotos enviadas por aqui ficam guardadas
       $('#fLink').value = (/^https?:/i.test(p.img) && !storagePath(p.img)) ? p.img : '';
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showTab('form');
       $('#fNome').focus();
     }
 
@@ -742,7 +1223,8 @@
         }
         form.reset();
         await loadPerfumes();
-        toast(id ? 'Alterações salvas.' : 'Perfume adicionado à vitrine.');
+        showTab('perfumes');
+        toast(id ? 'Alterações salvas.' : 'Perfume publicado na vitrine.');
       } catch (err) {
         await dropUpload();
         toast(err.message || 'Não foi possível salvar.');
@@ -777,7 +1259,7 @@
     openFromHash();
 
     /* ---------- Links de WhatsApp (todos os [data-whats]) ---------- */
-    $$('[data-whats]').forEach(a => a.href = whatsLink(CONFIG.defaultMessage));
+    $$('[data-whats]').forEach(a => { a.href = whatsLink(CONFIG.defaultMessage); a.dataset.track = 'clique_whatsapp'; });
 
     /* ---------- Menu mobile ---------- */
     const menuBtn = $('#menuBtn'), mobileMenu = $('#mobileMenu');
@@ -813,6 +1295,7 @@
     $('#year').textContent = new Date().getFullYear();
     renderVitrine();     // mostra "carregando" até o banco responder
     loadPerfumes();
+    initTracking();
   })();
   </script>
 </body>
